@@ -2605,15 +2605,19 @@ section:not(.hero),footer{position:relative; z-index:1}
 }
 .pillar__ico,.pillar--3 .pillar__ico{width:clamp(18px,1.6vw,23px)}
 
-/* ── FB①（2026-09-09）：FVの3点をアイコン＋テキストから
-      「円の中に文字」のバッジに。装飾は控えめ＝細い円と数字だけ ── */
-.pillar__badge{
-  flex:0 0 auto;
-  width:clamp(20px,1.75vw,25px); height:clamp(20px,1.75vw,25px);
-  border:1px solid var(--icon); border-radius:50%;
-  display:grid; place-items:center;
-  font-size:clamp(10px,.8vw,11.5px); font-weight:700; line-height:1;
-  color:var(--icon); font-feature-settings:"tnum";
+/* ── FB①（2026-09-09）：FVの3点を「アイコン＋テキスト」から
+      テキストごとバッジ（ピル型の囲み）に変えた。
+   🚨 一度「円の中に数字」で作ったが、指示は "文字をバッジに入れる" だった。
+   🚨 円形にすると13〜17字が入らない。先方の「円の中に文字」とは形が違うので、
+      文言を短くするか円をやめるかは先方に確認中（2026-09-10 時点はピル型）。
+   🚨 塗りは薄い白。FVの背景が左は明るく右は暗いグラデーションで、
+      線だけ（border のみ）だと1つ目が地に沈んで読めなかった ── */
+.pillar{ display:block }
+.pillar h3{
+  display:inline-block;
+  border:1px solid rgba(18,48,85,.16); border-radius:999px;
+  padding:.52em 1.15em;
+  color:var(--icon); background:rgba(255,255,255,.72);
 }
 /* ── FB②：真ん中が空いていたので、左のテキスト群を中央寄りへ ──
    実測（1440）：文字の右端566 ／ フォームの左端884 ／ 空き318px */
@@ -3100,15 +3104,15 @@ a.art__cta[class] i{background:var(--navy)}
         <div class="pillars">
           <div class="prow">
           <div class="pillar pillar--1">
-            <span class="pillar__badge">1</span>
+            
             <div><h3>見積時にヒアリングシート不要</h3></div>
           </div>
           <div class="pillar pillar--2">
-            <span class="pillar__badge">2</span>
+            
             <div><h3>大手の50%程度の納得のプライシング</h3></div>
           </div>
           <div class="pillar pillar--3">
-            <span class="pillar__badge">3</span>
+            
             <div><h3>AI＋手動で高品質なハイブリッド診断</h3></div>
           </div>
           </div>
