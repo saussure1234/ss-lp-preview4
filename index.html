@@ -2648,7 +2648,7 @@ section:not(.hero),footer{position:relative; z-index:1}
 /* 🚨 flex:1 1 0 だと .pillar が円より広くなり（1440で209.7px vs 円185px）、
    cqi の基準がずれる。flex-basis を円の上限と同じ185pxにして、
    .pillar の幅＝円の幅にそろえてから container にする */
-.pillar{ display:block; flex:0 1 175px; min-width:0; container-type:inline-size }
+.pillar{ display:block; flex:0 1 165px; min-width:0; container-type:inline-size }
 /* 🚨 display:grid + place-items:center にしてはいけない。place-items はセルの中の
    寄せで、行そのものは auto で伸びる。ラベルと主役が別の行になって上下に
    引き離され、主役行の外端が中心から55.9px＝内側の円をはみ出した（実測）。
@@ -2660,7 +2660,7 @@ section:not(.hero),footer{position:relative; z-index:1}
      ただし cqi で級数も連動するので、どの径でも収まりは足りる。効く制約は読める級数のほう。
      185→165 に縮小（主役12.9→11.6px、ラベル10.4→9.3px）。
      これ以上small にするとラベルが9pxを切る（150pxで8.4px）。2026-09-10 */
-  width:100%; aspect-ratio:1 / 1; max-width:175px;
+  width:100%; aspect-ratio:1 / 1; max-width:165px;
   padding:0;
   border-radius:50%;
   color:var(--icon);
@@ -2675,7 +2675,10 @@ section:not(.hero),footer{position:relative; z-index:1}
   /* 🚨 太いリングは内側を食う。6.1cqi(10px)＋主役11.6pxだと3つ目の余裕が1.5pxしか
      残らなかった（実測）。リング5.5cqi(9.1px)・主役6.65cqi(11.0px)で余裕9.3pxにした。
      リングを太くするぶん字が小さくなるのは避けられない。直径を175pxに戻せば主役11.6pxに戻る。 */
-  border:5.5cqi solid transparent;
+  /* 🚨 字を15/16pxに固定したまま円を縮めるには、リングと行間を削るしかない。
+     5.5cqi(9.6px)→4.5cqi(7.4px)。これで直径175→165pxにできる。
+     計算上の下限は約160px（8字の「ハイブリッド診断」118pxが、外周寄りの行位置で入る限界）。 */
+  border:4.5cqi solid transparent;
   background:
     linear-gradient(#fff,#fff) padding-box,
     linear-gradient(160deg, #3a72b4 0%, var(--navy-h) 45%, var(--navy) 100%) border-box;
@@ -2685,7 +2688,7 @@ section:not(.hero),footer{position:relative; z-index:1}
      ラベルをリードと同じ15pxにすると、主役1行では円が235px要り3つで733px＝左カラム657pxに入らない。
      そこで主役を2行に割った（最長8字）。これで円175pxに label15px / 主役16px が収まる。
      割り位置は意味の切れ目： ヒアリングシート／不要 ・ 納得の／プライシング ・ 高品質な／ハイブリッド診断 */
-  font-size:clamp(11px, 9.14cqi, 16px); line-height:1.45; font-weight:700;
+  font-size:clamp(11px, 9.70cqi, 16px); line-height:1.35; font-weight:700;
   word-break:keep-all; overflow-wrap:anywhere;
 }
 /* リングの内側の明るい縁。参考画像でリングと中身を分けているのはこの1本 */
