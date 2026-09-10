@@ -393,6 +393,14 @@ a{text-decoration:none; color:inherit}
   .brp{display:none}   /* 原稿の改行はPC用。スマホは自然に折り返させる */
 }
 
+/* 🚨 .brs は .brp の対。スマホでだけ入れる改行。
+   自然な折り返しに任せると語の途中で切れる見出しにだけ使う。
+   例：「なぜSHARE Securityが選ばれるのか？」は375pxで「選ばれ／るのか？」と
+   割れていた（実測 324.3px / 92.9px。2026-09-10 に指摘された）。
+   🚨 既定を none にしてから media で戻す。この順を逆にすると打ち消される。 */
+.brs{display:none}
+@media (max-width:900px){ .brs{display:inline} }
+
 
 /* ================================================================
    OUR STRENGTH（強み）─ _ref/strengths.png（1024x1536）の再現
@@ -896,6 +904,12 @@ a{text-decoration:none; color:inherit}
 .d4{ padding-top:0 }
 .d4__cases{ margin-top:0 }
 .d4__cases .d4__rail{ display:none }   /* 分岐から降りてくる線の受け。分岐が無いので不要 */
+/* 🚨 レールを消すだけでは足りない。スマホ用ブロック（759行）に、レールから
+   各ケースへ「入る」横棒と矢じりが ::before / ::after で別に描かれていて、
+   これが箱の左外に浮いたまま残っていた（2026-09-10 に指摘された）。
+   一般的な構成・SHARE Security の構成の両方に付くので、矢印が2本見えていた。 */
+.d4__cases .d4__case::before,
+.d4__cases .d4__case::after{ content:none }
 
 /* ── 375pxで「貴社エンジニアの工数を使うヒアリングや資料作成は不要」の
       最終行が33px（2文字）だけ落ちていた。意味の切れ目でだけ折る。
@@ -2908,8 +2922,10 @@ a.art__cta[class] i{background:var(--navy)}
   }
   .h1{color:#fff}
   .lead{color:rgba(255,255,255,.88)}
-  .pillar h3{color:#fff}
-  .pillar__ico--m{background:#fff}
+  /* 🚨 .pillar h3 を白にしてはいけない。FB①でピル型の「薄白の塗り」が付いたので、
+     白にすると白地に白字になる（2026-09-10 に指摘された）。
+     h1・lead は地の上に直接載るので白、バッジは自分の塗りを持つので濃い字。 */
+  .pillar h3{color:var(--icon)}
   .copy{position:relative; z-index:2; order:0; padding:clamp(26px,5vh,44px) 0 34px}
   .copy .wrap{padding-top:0}
   .pillars{margin-top:20px}
@@ -3367,7 +3383,7 @@ a.art__cta[class] i{background:var(--navy)}
 <section class="why" id="why">
   <div class="wrap">
     <div class="why__head">
-      <h2 class="why__title">なぜSHARE Securityが選ばれるのか？</h2>
+      <h2 class="why__title">なぜSHARE Securityが<br class="brs">選ばれるのか？</h2>
       <p class="why__lead">セキュリティ診断を依頼する際、多くの企業は「大手に頼めば安心」と考えがちです。<br>
         しかし、実は診断現場での実働や、最終的な検出精度、コストパフォーマンス、フォロー体制には大きな違いがあります。<br>
         ここでは、SHARE Securityがどのように大手診断会社と異なるのかをご説明します。</p>
