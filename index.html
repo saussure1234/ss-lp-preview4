@@ -2648,7 +2648,7 @@ section:not(.hero),footer{position:relative; z-index:1}
 /* 🚨 flex:1 1 0 だと .pillar が円より広くなり（1440で209.7px vs 円185px）、
    cqi の基準がずれる。flex-basis を円の上限と同じ185pxにして、
    .pillar の幅＝円の幅にそろえてから container にする */
-.pillar{ display:block; flex:0 1 165px; min-width:0; container-type:inline-size }
+.pillar{ display:block; flex:0 1 175px; min-width:0; container-type:inline-size }
 /* 🚨 display:grid + place-items:center にしてはいけない。place-items はセルの中の
    寄せで、行そのものは auto で伸びる。ラベルと主役が別の行になって上下に
    引き離され、主役行の外端が中心から55.9px＝内側の円をはみ出した（実測）。
@@ -2660,7 +2660,7 @@ section:not(.hero),footer{position:relative; z-index:1}
      ただし cqi で級数も連動するので、どの径でも収まりは足りる。効く制約は読める級数のほう。
      185→165 に縮小（主役12.9→11.6px、ラベル10.4→9.3px）。
      これ以上small にするとラベルが9pxを切る（150pxで8.4px）。2026-09-10 */
-  width:100%; aspect-ratio:1 / 1; max-width:165px;
+  width:100%; aspect-ratio:1 / 1; max-width:175px;
   padding:0;
   border-radius:50%;
   color:var(--icon);
@@ -2681,7 +2681,11 @@ section:not(.hero),footer{position:relative; z-index:1}
     linear-gradient(160deg, #3a72b4 0%, var(--navy-h) 45%, var(--navy) 100%) border-box;
   position:relative;
   /* 🚨 級数も vw でなく cqi。vw だと円が縮んでも字が縮まず輪に触る。13px上限 */
-  font-size:clamp(9.5px, 6.65cqi, 13px); line-height:1.45; font-weight:700;
+  /* 🚨 ラベルが8.78pxで、FVリード15.12pxの58%しかなく「小さすぎる」と指摘（2026-09-10）。
+     ラベルをリードと同じ15pxにすると、主役1行では円が235px要り3つで733px＝左カラム657pxに入らない。
+     そこで主役を2行に割った（最長8字）。これで円175pxに label15px / 主役16px が収まる。
+     割り位置は意味の切れ目： ヒアリングシート／不要 ・ 納得の／プライシング ・ 高品質な／ハイブリッド診断 */
+  font-size:clamp(11px, 9.14cqi, 16px); line-height:1.45; font-weight:700;
   word-break:keep-all; overflow-wrap:anywhere;
 }
 /* リングの内側の明るい縁。参考画像でリングと中身を分けているのはこの1本 */
@@ -2691,8 +2695,9 @@ section:not(.hero),footer{position:relative; z-index:1}
 }
 /* 1行目＝小さいラベル。2行目との差で階層をつける（いまは2行とも同格だった） */
 .pillar h3 .pl-lb{
-  display:block; margin-bottom:.34em;
-  font-size:.80em; font-weight:600; letter-spacing:.06em;
+  display:block; margin-bottom:.30em;
+  /* 🚨 .94em ＝ 主役16pxに対して15.0px。FVリード(15.12px)と同じ大きさになる */
+  font-size:.94em; font-weight:600; letter-spacing:.04em;
   color:color-mix(in srgb, var(--icon) 62%, transparent);
 }
 /* ── FB②：真ん中が空いていたので、左のテキスト群を中央寄りへ ──
@@ -2720,6 +2725,9 @@ section:not(.hero),footer{position:relative; z-index:1}
   }
   /* 内側の明るい縁は、角丸に合わせて半径を揃える（50%のままだと楕円が出る） */
   .pillar h3::after{ inset:1px; border-radius:14px; border-color:rgba(255,255,255,.55) }
+  /* 🚨 主役の2行割りは「円に入れる」ための措置。角丸の箱は横に余裕があるので
+     スマホでは解除する。入れたままだと3行になって縦に伸び、フォームが下がる。 */
+  .pillar h3 br{ display:none }
   .pillar h3 .pl-lb{ margin-bottom:.24em }
 }
 /* ---------------- 濃色をページ全体に配る（配色指示書 §4-4） ----------------
@@ -3199,15 +3207,15 @@ a.art__cta[class] i{background:var(--navy)}
           <div class="prow">
           <div class="pillar pillar--1">
             
-            <div><h3><span class="pl-lb">見積時</span>ヒアリングシート不要</h3></div>
+            <div><h3><span class="pl-lb">見積時</span>ヒアリングシート<br>不要</h3></div>
           </div>
           <div class="pillar pillar--2">
             
-            <div><h3><span class="pl-lb">大手の50%程度</span>納得のプライシング</h3></div>
+            <div><h3><span class="pl-lb">大手の50%程度</span>納得の<br>プライシング</h3></div>
           </div>
           <div class="pillar pillar--3">
             
-            <div><h3><span class="pl-lb">AI＋手動</span>高品質なハイブリッド診断</h3></div>
+            <div><h3><span class="pl-lb">AI＋手動</span>高品質な<br>ハイブリッド診断</h3></div>
           </div>
           </div>
         </div>
