@@ -572,8 +572,13 @@ a{text-decoration:none; color:inherit}
    既定の stretch に戻して下端を揃える（2026-09-10 の指摘）。 */
 .d4__cases{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--dgap);
   align-items:stretch}
+/* 🚨 align-items:stretch で左右の高さを揃えたので、中身が短い左の箱は
+   下に146pxの余りが出る（実測）。中身を上下中央に置く。
+   .d4__cap（一般的な構成／SHARE Security の構成）は position:absolute で
+   箱の上端に乗っているので、これには連動しない。 */
 .d4__case{
   position:relative; border-radius:6px; text-align:center;
+  display:flex; flex-direction:column; justify-content:center;
   padding:clamp(20px,2.2vw,32px) clamp(12px,1.4vw,20px) clamp(14px,1.6vw,24px);
 }
 .d4__case--std{background:#f4f5f7; border:1px solid #e0e3e9}
@@ -3308,11 +3313,9 @@ a.art__cta[class] i{background:var(--navy)}
       <hr>
       <h2 class="s-title">これらの課題を、SHARE Securityが解決します</h2>
     </div>
-    <div class="s-notch" aria-hidden="true">
-      <i></i>
-      <svg viewBox="0 0 80 16"><path d="M0 .5h28l12 14 12-14h28"/></svg>
-      <i></i>
-    </div>
+    <!-- 🚨 .s-notch（章の切れ目の細い罫＋V字）は削除（2026-09-10 指示）。
+         白地に対してコントラスト比1.26で、装飾の目安3.0の半分以下＝実質見えていなかった。
+         CSSの定義（435行〜）は残してあるので、戻すならこのHTMLを書き戻すだけ。 -->
 
     <div class="s-row">
       <div class="s-lead">
