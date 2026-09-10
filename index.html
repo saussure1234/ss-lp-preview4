@@ -2648,7 +2648,7 @@ section:not(.hero),footer{position:relative; z-index:1}
 /* 🚨 flex:1 1 0 だと .pillar が円より広くなり（1440で209.7px vs 円185px）、
    cqi の基準がずれる。flex-basis を円の上限と同じ185pxにして、
    .pillar の幅＝円の幅にそろえてから container にする */
-.pillar{ display:block; flex:0 1 165px; min-width:0; container-type:inline-size }
+.pillar{ display:block; flex:0 1 155px; min-width:0; container-type:inline-size }
 /* 🚨 display:grid + place-items:center にしてはいけない。place-items はセルの中の
    寄せで、行そのものは auto で伸びる。ラベルと主役が別の行になって上下に
    引き離され、主役行の外端が中心から55.9px＝内側の円をはみ出した（実測）。
@@ -2660,7 +2660,7 @@ section:not(.hero),footer{position:relative; z-index:1}
      ただし cqi で級数も連動するので、どの径でも収まりは足りる。効く制約は読める級数のほう。
      185→165 に縮小（主役12.9→11.6px、ラベル10.4→9.3px）。
      これ以上small にするとラベルが9pxを切る（150pxで8.4px）。2026-09-10 */
-  width:100%; aspect-ratio:1 / 1; max-width:165px;
+  width:100%; aspect-ratio:1 / 1; max-width:155px;
   padding:0;
   border-radius:50%;
   color:var(--icon);
@@ -2688,19 +2688,21 @@ section:not(.hero),footer{position:relative; z-index:1}
      ラベルをリードと同じ15pxにすると、主役1行では円が235px要り3つで733px＝左カラム657pxに入らない。
      そこで主役を2行に割った（最長8字）。これで円175pxに label15px / 主役16px が収まる。
      割り位置は意味の切れ目： ヒアリングシート／不要 ・ 納得の／プライシング ・ 高品質な／ハイブリッド診断 */
-  font-size:clamp(11px, 9.70cqi, 16px); line-height:1.35; font-weight:700;
+  font-size:clamp(11px, 10.32cqi, 16px); line-height:1.28; font-weight:700;
   word-break:keep-all; overflow-wrap:anywhere;
 }
 /* リングの内側の明るい縁。参考画像でリングと中身を分けているのはこの1本 */
 .pillar h3::after{
-  content:''; position:absolute; inset:3px; border-radius:50%;
+  /* 🚨 inset:3px は片側4px＝直径8pxを食う。リングの内側にぴったり付ければ1pxで済み、
+     リングの太さ(7px)を保ったまま直径を8px縮められる。 */
+  content:''; position:absolute; inset:0; border-radius:50%;
   border:1px solid rgba(255,255,255,.75); pointer-events:none;
 }
 /* 1行目＝小さいラベル。2行目との差で階層をつける（いまは2行とも同格だった） */
 .pillar h3 .pl-lb{
-  display:block; margin-bottom:.30em;
+  display:block; margin-bottom:.12em;
   /* 🚨 .94em ＝ 主役16pxに対して15.0px。FVリード(15.12px)と同じ大きさになる */
-  font-size:.94em; font-weight:600; letter-spacing:.04em;
+  font-size:.94em; font-weight:600; letter-spacing:0;
   color:color-mix(in srgb, var(--icon) 62%, transparent);
 }
 /* ── FB②：真ん中が空いていたので、左のテキスト群を中央寄りへ ──
