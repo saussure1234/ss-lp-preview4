@@ -2693,7 +2693,9 @@ section:not(.hero),footer{position:relative; z-index:1}
      ラベルをリードと同じ15pxにすると、主役1行では円が235px要り3つで733px＝左カラム657pxに入らない。
      そこで主役を2行に割った（最長8字）。これで円175pxに label15px / 主役16px が収まる。
      割り位置は意味の切れ目： ヒアリングシート／不要 ・ 納得の／プライシング ・ 高品質な／ハイブリッド診断 */
-  font-size:clamp(11px, 10.32cqi, 16px); line-height:1.28; font-weight:700;
+  /* 🚨 下限は9.5px。スマホの円は100pxまで縮むので 10.32cqi＝10.3px になる。
+     床を11pxにすると円より字が大きくなって溢れる。 */
+  font-size:clamp(9.5px, 10.32cqi, 16px); line-height:1.28; font-weight:700;
   word-break:keep-all; overflow-wrap:anywhere;
 }
 /* リングの内側の明るい縁。参考画像でリングと中身を分けているのはこの1本 */
@@ -2719,25 +2721,18 @@ section:not(.hero),footer{position:relative; z-index:1}
   .pillars{margin-top:22px}
   .prow{gap:12px}
   .pillar__ico,.pillar--3 .pillar__ico,.pillar__ico--m{width:22px}
-  /* 🚨 スマホでは円をやめる。375pxで円3つを横に並べると直径103pxになり、
-     2行を収めるには字が 8.85px 以下になって読めない（計算・実測とも）。
-     縦に積むと 185px × 3 ＝ 555px で、下のフォームが画面外へ落ちる。
-     改行（｜）はそのまま活かして、角丸の箱で2行にする。 */
-  .prow{ flex-direction:column; align-items:flex-start; gap:10px }
-  .pillar{ flex:0 0 auto; width:100% }
-  /* 🚨 リングの太さは cqi なので、スマホでは基準が「箱の幅(318px)」になり
-     17px の極太リングになった（実測）。px で上書きする。
-     角丸の箱に9pxのリングは重すぎるので2px。グラデーションは残して系統を合わせる。 */
-  .pillar h3{
-    width:max-content; max-width:100%; aspect-ratio:auto;
-    border-width:2px; border-radius:16px; padding:.62em 1.15em;
-    font-size:13.5px; line-height:1.5;
-  }
-  /* 内側の明るい縁は、角丸に合わせて半径を揃える（50%のままだと楕円が出る） */
-  .pillar h3::after{ inset:1px; border-radius:14px; border-color:rgba(255,255,255,.55) }
-  /* 🚨 主役の2行割りは「円に入れる」ための措置。角丸の箱は横に余裕があるので
-     スマホでは解除する。入れたままだと3行になって縦に伸び、フォームが下がる。 */
-  .pillar h3 br{ display:none }
+  /* 🚨 2026-09-10：スマホも角丸をやめて円に統一した。
+     以前「375pxで円3つは字が8.85px以下になる」と書いたが、それは主役を1行で
+     入れようとしていたときの数字。いまは主役を2行に割ってあるので、
+     最長行が「ハイブリッド診断」8字＝7.4×級数で済み、円100pxでも入る。
+     角丸のままだとPCと別物のバッジに見えるので、形はPCと同じにする。
+   🚨 幅の指定は足さない。PC側の .pillar{flex:0 1 155px} が効いて、
+      桁が足りなければ自動で (318-gap)/3 ＝ 100px に縮む。
+      リングも級数も cqi なので、その円に合わせて一緒に縮む。 */
+  /* 🚨 375pxでは円が100.5pxになり、3つ目の余裕が2pxしか残らなかった（実測）。
+     隙間を8→6px、リングを4.5→3.5cqi に詰めて余裕を確保する。 */
+  .prow{ gap:6px }
+  .pillar h3{ border-width:3.5cqi }
   .pillar h3 .pl-lb{ margin-bottom:.24em }
 }
 /* ---------------- 濃色をページ全体に配る（配色指示書 §4-4） ----------------
