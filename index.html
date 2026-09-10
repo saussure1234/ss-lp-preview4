@@ -2648,7 +2648,7 @@ section:not(.hero),footer{position:relative; z-index:1}
 /* 🚨 flex:1 1 0 だと .pillar が円より広くなり（1440で209.7px vs 円185px）、
    cqi の基準がずれる。flex-basis を円の上限と同じ185pxにして、
    .pillar の幅＝円の幅にそろえてから container にする */
-.pillar{ display:block; flex:0 1 185px; min-width:0; container-type:inline-size }
+.pillar{ display:block; flex:0 1 165px; min-width:0; container-type:inline-size }
 /* 🚨 display:grid + place-items:center にしてはいけない。place-items はセルの中の
    寄せで、行そのものは auto で伸びる。ラベルと主役が別の行になって上下に
    引き離され、主役行の外端が中心から55.9px＝内側の円をはみ出した（実測）。
@@ -2656,7 +2656,11 @@ section:not(.hero),footer{position:relative; z-index:1}
 .pillar h3{
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   text-align:center;
-  width:100%; aspect-ratio:1 / 1; max-width:185px;
+  /* 🚨 直径は「高品質なハイブリッド診断」12字が1行で入る条件で決まる：直径 ≧ 13.39×級数。
+     ただし cqi で級数も連動するので、どの径でも収まりは足りる。効く制約は読める級数のほう。
+     185→165 に縮小（主役12.9→11.6px、ラベル10.4→9.3px）。
+     これ以上small にするとラベルが9pxを切る（150pxで8.4px）。2026-09-10 */
+  width:100%; aspect-ratio:1 / 1; max-width:165px;
   padding:0;
   border:0; border-radius:50%;
   color:var(--icon); background:#fff;
