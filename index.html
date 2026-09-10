@@ -567,8 +567,11 @@ a{text-decoration:none; color:inherit}
    上に診断対象を置き、そこから左＝一般的な構成／右＝SHAREの構成へ分岐させる。
    上から下へ1方向に読める形にする。 */
 .d4{--dgap:clamp(14px,1.8vw,28px); display:block}
+/* 🚨 align-items:start だと各箱が中身の高さのままになり、左（一般的な構成）が
+   右（SHARE Security の構成）より 119.4px 低くなっていた（1440px実測。243.7 / 363.1）。
+   既定の stretch に戻して下端を揃える（2026-09-10 の指摘）。 */
 .d4__cases{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--dgap);
-  align-items:start}
+  align-items:stretch}
 .d4__case{
   position:relative; border-radius:6px; text-align:center;
   padding:clamp(20px,2.2vw,32px) clamp(12px,1.4vw,20px) clamp(14px,1.6vw,24px);
@@ -2619,19 +2622,30 @@ section:not(.hero),footer{position:relative; z-index:1}
 }
 .pillar__ico,.pillar--3 .pillar__ico{width:clamp(18px,1.6vw,23px)}
 
-/* ── FB①（2026-09-09）：FVの3点を「アイコン＋テキスト」から
-      テキストごとバッジ（ピル型の囲み）に変えた。
-   🚨 一度「円の中に数字」で作ったが、指示は "文字をバッジに入れる" だった。
-   🚨 円形にすると13〜17字が入らない。先方の「円の中に文字」とは形が違うので、
-      文言を短くするか円をやめるかは先方に確認中（2026-09-10 時点はピル型）。
+/* ── FB①（2026-09-09 → 2026-09-10 に形を確定）：FVの3点を
+      「アイコン＋テキスト」から、円の中に文字を入れたバッジに変えた。
+   参考画像＝BOXIL SaaS AWARD のバッジ（円＋2行）。
+   先方原稿の「｜」は改行位置の指定なので、そこで <br> を入れる。
+     見積時｜ヒアリングシート不要 ／ 大手の50%程度｜納得のプライシング
+     AI＋手動｜高品質なハイブリッド診断
+   🚨 2026-09-09 に「13〜17字は円に入らない」と書いたのは誤り。
+      1行で入れようとしていたため。2行なら入る。
+   🚨 直径は最長行から決まる。13pxで「高品質なハイブリッド診断」が147px、
+      円に収まる横幅は直径の約80%なので185px要る。3つ＋隙間で583px。
+      1440pxのFV左カラムは657pxなので収まる（15pxだと667pxで溢れた）。
+   🚨 直径を焼き込まない。flex:1 で桁から出せば、狭い幅でも自動で縮んで溢れない。
    🚨 塗りは薄い白。FVの背景が左は明るく右は暗いグラデーションで、
       線だけ（border のみ）だと1つ目が地に沈んで読めなかった ── */
-.pillar{ display:block }
+.prow{ flex-direction:row; align-items:flex-start; gap:clamp(8px,1vw,14px) }
+.pillar{ display:block; flex:1 1 0; min-width:0 }
 .pillar h3{
-  display:inline-block;
-  border:1px solid rgba(18,48,85,.16); border-radius:999px;
-  padding:.52em 1.15em;
+  display:grid; place-items:center; text-align:center;
+  width:100%; aspect-ratio:1 / 1; max-width:185px;
+  padding:0;
+  border:1px solid rgba(18,48,85,.16); border-radius:50%;
   color:var(--icon); background:rgba(255,255,255,.72);
+  font-size:clamp(11px,.92vw,13px); line-height:1.55;
+  word-break:keep-all; overflow-wrap:anywhere;
 }
 /* ── FB②：真ん中が空いていたので、左のテキスト群を中央寄りへ ──
    実測（1440）：文字の右端566 ／ フォームの左端884 ／ 空き318px */
@@ -2642,7 +2656,17 @@ section:not(.hero),footer{position:relative; z-index:1}
   .pillars{margin-top:22px}
   .prow{gap:12px}
   .pillar__ico,.pillar--3 .pillar__ico,.pillar__ico--m{width:22px}
-  .pillar h3{font-size:14px}
+  /* 🚨 スマホでは円をやめる。375pxで円3つを横に並べると直径103pxになり、
+     2行を収めるには字が 8.85px 以下になって読めない（計算・実測とも）。
+     縦に積むと 185px × 3 ＝ 555px で、下のフォームが画面外へ落ちる。
+     改行（｜）はそのまま活かして、角丸の箱で2行にする。 */
+  .prow{ flex-direction:column; align-items:flex-start; gap:10px }
+  .pillar{ flex:0 0 auto; width:100% }
+  .pillar h3{
+    width:max-content; max-width:100%; aspect-ratio:auto;
+    border-radius:16px; padding:.5em 1.1em;
+    font-size:13.5px; line-height:1.5;
+  }
 }
 /* ---------------- 濃色をページ全体に配る（配色指示書 §4-4） ----------------
    濃色地（章）      … 著書 ／ 生成AI ／ 今すぐ無料相談
@@ -3121,15 +3145,15 @@ a.art__cta[class] i{background:var(--navy)}
           <div class="prow">
           <div class="pillar pillar--1">
             
-            <div><h3>見積時にヒアリングシート不要</h3></div>
+            <div><h3>見積時<br>ヒアリングシート不要</h3></div>
           </div>
           <div class="pillar pillar--2">
             
-            <div><h3>大手の50%程度の納得のプライシング</h3></div>
+            <div><h3>大手の50%程度<br>納得のプライシング</h3></div>
           </div>
           <div class="pillar pillar--3">
             
-            <div><h3>AI＋手動で高品質なハイブリッド診断</h3></div>
+            <div><h3>AI＋手動<br>高品質なハイブリッド診断</h3></div>
           </div>
           </div>
         </div>
