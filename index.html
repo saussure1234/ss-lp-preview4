@@ -2634,18 +2634,49 @@ section:not(.hero),footer{position:relative; z-index:1}
       円に収まる横幅は直径の約80%なので185px要る。3つ＋隙間で583px。
       1440pxのFV左カラムは657pxなので収まる（15pxだと667pxで溢れた）。
    🚨 直径を焼き込まない。flex:1 で桁から出せば、狭い幅でも自動で縮んで溢れない。
-   🚨 塗りは薄い白。FVの背景が左は明るく右は暗いグラデーションで、
-      線だけ（border のみ）だと1つ目が地に沈んで読めなかった ── */
+
+   ── 2026-09-10：形を画像生成（/images/edits）で6案出し、「細い二重リング」を採用。
+   生成物の実測（1536px側→実寸は÷1.0667）：
+     直径184px→172 ／ 外の白い帯8→7.5 ／ 濃紺リング2px(0,5,45)→1.9
+     ／ 白い間5→4.7 ／ 内のヘアライン1px(165,181,190)→0.9 ／ 塗り(250,251,255)
+   🚨 リングは円の「縁」ではなく内側に入っている。border ではなく inset の
+      box-shadow を細い順に重ねて同心円を作る（先に書いたものが上に描かれる）。
+   🚨 直径だけは生成物の172pxを採らず185pxのまま。生成物は文字が3行に割れており、
+      実際の文言（最長12字）を2行で入れるには内側の円が155px以上要るため。
+      リングの入り位置を 8/15px から 6/12px に詰めて、主役13.5pxを通した ── */
 .prow{ flex-direction:row; align-items:flex-start; gap:clamp(8px,1vw,14px) }
-.pillar{ display:block; flex:1 1 0; min-width:0 }
+/* 🚨 flex:1 1 0 だと .pillar が円より広くなり（1440で209.7px vs 円185px）、
+   cqi の基準がずれる。flex-basis を円の上限と同じ185pxにして、
+   .pillar の幅＝円の幅にそろえてから container にする */
+.pillar{ display:block; flex:0 1 185px; min-width:0; container-type:inline-size }
+/* 🚨 display:grid + place-items:center にしてはいけない。place-items はセルの中の
+   寄せで、行そのものは auto で伸びる。ラベルと主役が別の行になって上下に
+   引き離され、主役行の外端が中心から55.9px＝内側の円をはみ出した（実測）。
+   2行を1つの塊として中央に置きたいので flex の column にする。 */
 .pillar h3{
-  display:grid; place-items:center; text-align:center;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center;
   width:100%; aspect-ratio:1 / 1; max-width:185px;
   padding:0;
-  border:1px solid rgba(18,48,85,.16); border-radius:50%;
-  color:var(--icon); background:rgba(255,255,255,.72);
-  font-size:clamp(11px,.92vw,13px); line-height:1.55;
+  border:0; border-radius:50%;
+  color:var(--icon); background:#fff;
+  /* 🚨 px で焼くと、円が縮む幅（901pxで直径153px）でリングだけ相対的に太くなり、
+     内側の円が足りずに主役行が輪に4px食い込んだ（実測）。cqi で円に連動させる。
+     185px のときに 5 / 7 / 10 / 11px になる比率 */
+  box-shadow:
+    inset 0 0 0 2.70cqi #fff,
+    inset 0 0 0 3.78cqi var(--icon),
+    inset 0 0 0 5.41cqi #fff,
+    inset 0 0 0 5.95cqi color-mix(in srgb, var(--icon) 30%, #fff);
+  /* 🚨 級数も vw でなく cqi。vw だと円が縮んでも字が縮まず輪に触る。13px上限 */
+  font-size:clamp(10.5px, 7cqi, 13px); line-height:1.45; font-weight:700;
   word-break:keep-all; overflow-wrap:anywhere;
+}
+/* 1行目＝小さいラベル。2行目との差で階層をつける（いまは2行とも同格だった） */
+.pillar h3 .pl-lb{
+  display:block; margin-bottom:.34em;
+  font-size:.80em; font-weight:600; letter-spacing:.06em;
+  color:color-mix(in srgb, var(--icon) 62%, transparent);
 }
 /* ── FB②：真ん中が空いていたので、左のテキスト群を中央寄りへ ──
    実測（1440）：文字の右端566 ／ フォームの左端884 ／ 空き318px */
@@ -2662,11 +2693,15 @@ section:not(.hero),footer{position:relative; z-index:1}
      改行（｜）はそのまま活かして、角丸の箱で2行にする。 */
   .prow{ flex-direction:column; align-items:flex-start; gap:10px }
   .pillar{ flex:0 0 auto; width:100% }
+  /* 🚨 二重リングも外す。箱の高さが56pxしかないので、内側に6px・12pxで線を入れると
+     文字に当たる。スマホは細い線1本にして、階層（1行目を小さく）だけ残す。 */
   .pillar h3{
     width:max-content; max-width:100%; aspect-ratio:auto;
-    border-radius:16px; padding:.5em 1.1em;
+    border-radius:16px; padding:.62em 1.15em;
+    box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--icon) 22%, #fff);
     font-size:13.5px; line-height:1.5;
   }
+  .pillar h3 .pl-lb{ margin-bottom:.24em }
 }
 /* ---------------- 濃色をページ全体に配る（配色指示書 §4-4） ----------------
    濃色地（章）      … 著書 ／ 生成AI ／ 今すぐ無料相談
@@ -3145,15 +3180,15 @@ a.art__cta[class] i{background:var(--navy)}
           <div class="prow">
           <div class="pillar pillar--1">
             
-            <div><h3>見積時<br>ヒアリングシート不要</h3></div>
+            <div><h3><span class="pl-lb">見積時</span>ヒアリングシート不要</h3></div>
           </div>
           <div class="pillar pillar--2">
             
-            <div><h3>大手の50%程度<br>納得のプライシング</h3></div>
+            <div><h3><span class="pl-lb">大手の50%程度</span>納得のプライシング</h3></div>
           </div>
           <div class="pillar pillar--3">
             
-            <div><h3>AI＋手動<br>高品質なハイブリッド診断</h3></div>
+            <div><h3><span class="pl-lb">AI＋手動</span>高品質なハイブリッド診断</h3></div>
           </div>
           </div>
         </div>
